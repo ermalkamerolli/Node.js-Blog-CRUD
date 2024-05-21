@@ -1,15 +1,16 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const blogRoutes = require('./routes/blogRoutes')
+const connectDB = require('./db'); // Import the database connection function
+const blogRoutes = require('./routes/blogRoutes');
 
 // express app
 const app = express();
 
 // connect to mongodb
-const dbURI = 'mongodb+srv://ermal:ermal1234@cluster0.nj4ewzl.mongodb.net/'
-mongoose.connect(dbURI)
-    .then((result) => app.listen(3003))
-    .catch((err) => console.log(err));
+connectDB();
+
+// listen for requests
+const PORT = process.env.PORT || 3003;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // register view engine
 app.set('view engine', 'ejs');
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes
 app.get('/', (req, res) => {
-   res.redirect('/blogs');
+    res.redirect('/blogs');
 });
 
 app.get('/about', (req, res) => {
@@ -27,7 +28,7 @@ app.get('/about', (req, res) => {
 });
 
 // blog routes
-app.use('/blogs', blogRoutes); 
+app.use('/blogs', blogRoutes);
 
 // 404 page
 app.use((req, res) => {
